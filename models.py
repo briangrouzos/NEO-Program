@@ -17,6 +17,8 @@ quirks of the data set, such as missing names and unknown diameters.
 
 You'll edit this file in Task 1.
 """
+import math
+
 from helpers import cd_to_datetime, datetime_to_str
 
 
@@ -33,7 +35,7 @@ class NearEarthObject:
     `NEODatabase` constructor.
     """
     # initialize the object with the required and optional arguements
-    def __init__(self, designation, hazardous, name=None, diameter=-1.0, **info):
+    def __init__(self, designation, hazardous, name=None, diameter=float('nan'), **info):
         """Create a new `NearEarthObject`.
 
         :param info: A dictionary of excess keyword arguments supplied to the constructor.
@@ -72,10 +74,14 @@ class NearEarthObject:
         """Return the designation of this NEO."""
         return self.designation
 
+    def get_approaches(self):
+        """Return the approaches of this NEO."""
+        return self.approaches
+
     def __str__(self):
         """Return `str(self)`."""
         # Update diameter if there is a diameter
-        if self.diameter != -1.0:
+        if not math.isnan(self.diameter):
             temp_diameter = " has a diameter of " + str(self.diameter) + "km"
         else:
             temp_diameter = ""
@@ -139,6 +145,7 @@ class CloseApproach:
     def fullname(self):
         """Return a representation of the full name of this NEO."""
         return self.neo.fullname
+
 
     def __str__(self):
         """Return `str(self)`."""

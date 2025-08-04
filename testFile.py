@@ -1,5 +1,6 @@
 from models import NearEarthObject, CloseApproach
 from extract import load_neos, load_approaches
+from database import NEODatabase
 
 # neo = NearEarthObject("433", False, name="Eros", diameter=2.5)
 #
@@ -9,6 +10,15 @@ from extract import load_neos, load_approaches
 #
 # print(close_approach)
 
-# print(load_neos(r'C:\Users\E3000185\PycharmProjects\NEO-Program\data\neos.csv'))
+neos = load_neos(r'C:\Users\E3000185\PycharmProjects\NEO-Program\data\neos.csv')
 
-print(load_approaches(r'C:\Users\E3000185\PycharmProjects\NEO-Program\data\cad.json'))
+approaches = load_approaches(r'C:\Users\E3000185\PycharmProjects\NEO-Program\data\cad.json')
+
+database = NEODatabase(neos, approaches)
+
+#print(database.get_neo_by_name("Ganymed").get_approaches())
+
+for approach in database.get_neo_by_name("Ganymed").get_approaches():
+    print(approach)
+
+

@@ -40,7 +40,7 @@ def load_neos(neo_csv_path):
                 else:
                     name = row['name']
                 if row['diameter'] == '':
-                    diameter = -1.0
+                    diameter = float('nan')
                 else:
                     diameter = float(row['diameter'])
                 if row['pha'] == 'Y':
