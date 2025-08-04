@@ -106,21 +106,19 @@ class CloseApproach:
     private attribute, but the referenced NEO is eventually replaced in the
     `NEODatabase` constructor.
     """
-    # TODO: How can you, and should you, change the arguments to this constructor?
-    # If you make changes, be sure to update the comments in this file.
     def __init__(self, time, distance, velocity, neo, **info):
         """Create a new `CloseApproach`.
 
         :param info: A dictionary of excess keyword arguments supplied to the constructor.
         """
 
-        self._designation = neo.get_designation()
+        self._designation = neo
         self.time = cd_to_datetime(time)
         self.distance = float(distance)
         self.velocity = float(velocity)
 
         # Create an attribute for the referenced NEO, originally None.
-        self.neo = neo
+        self.neo = None
 
     @property
     def time_str(self):
