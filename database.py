@@ -49,13 +49,17 @@ class NEODatabase:
         # Create a dictionary of approaches by designation for faster DB setup
         self.approaches_by_designation = {}
 
+        # Create a dictionary of hazardous and non-hazardous NEOs
+        hazardous = {'hazardous':[], 'non-hazardous':[]}
+
+        # Populate the approaches by designation dictionary
         for approach in self._approaches:
-            if approach._designation not in self.approaches_by_designation:
-                self.approaches_by_designation[approach._designation] = [
+            if approach.get_designation() not in self.approaches_by_designation:
+                self.approaches_by_designation[approach.get_designation()] = [
                     approach
                 ]
             else:
-                self.approaches_by_designation[approach._designation].append(approach)
+                self.approaches_by_designation[approach.get_designation()].append(approach)
 
         # Connect neos and approaches
         for neo in self._neos:
@@ -63,6 +67,14 @@ class NEODatabase:
                 for approach in self.approaches_by_designation[neo.designation]:
                     approach.neo = neo
                     neo.approaches.append(approach)
+
+                # Create a hazardous and non-hazardous database
+                if neo.hazardous:
+                    hazardous['hazardous'].append(neo)
+                else:
+                    hazardous['non-hazardous'].append(neo)
+
+            # Handle KeyError by skipping that item and continuing
             except KeyError:
                 continue
 
@@ -120,6 +132,16 @@ class NEODatabase:
         :param filters: A collection of filters capturing user-specified criteria.
         :return: A stream of matching `CloseApproach` objects.
         """
-        # TODO: Generate `CloseApproach` objects that match all of the filters.
+        # Iterate over approaches to validate against filters
         for approach in self._approaches:
-            yield approach
+            valid = True
+
+            # Iterate over filters and change valid to false, break for loop if filter doesn't match approach
+            for f in filters:
+                if not f(approach):
+                    valid = False
+                    break
+
+            # Only print approach if it meets all the filter criteria
+            if valid:
+                yield approach

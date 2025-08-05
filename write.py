@@ -28,7 +28,27 @@ def write_to_csv(results, filename):
         'datetime_utc', 'distance_au', 'velocity_km_s',
         'designation', 'name', 'diameter_km', 'potentially_hazardous'
     )
-    # TODO: Write the results to a CSV file, following the specification in the instructions.
+    # Create a array to store the dictionary rows for loading to the CSV file
+    output = []
+
+    # Iterate over the results and create a dictionary item for each object's data. Append to output.
+    for result in results:
+        output.append({
+            "datetime_utc": result.time.strftime("%Y-%m-%d %H:%M"),
+            "distance_au": result.distance,
+            "velocity_km_s": result.velocity,
+            "designation": result.neo.designation,
+            "name": result.neo.name,
+            "diameter_km": result.neo.diameter,
+            "potentially_hazardous": result.neo.hazardous
+        })
+
+    # Write the information to a CSV file
+    with open(filename, 'w') as outfile:
+        writer = csv.DictWriter(outfile, fieldnames=fieldnames)
+        writer.writeheader()
+        for o in output:
+            writer.writerow(o)
 
 
 def write_to_json(results, filename):
@@ -42,4 +62,25 @@ def write_to_json(results, filename):
     :param results: An iterable of `CloseApproach` objects.
     :param filename: A Path-like object pointing to where the data should be saved.
     """
-    # TODO: Write the results to a JSON file, following the specification in the instructions.
+    # Open the file to write the JSON data to
+    with open(filename, 'w') as outfile:
+
+        # Create an approaches array for loading the JSON data
+        approaches = []
+
+        # Iterate over the data and store the dictionary item into the approaches array
+        for approach in results:
+            approaches.append({
+                "datetime_utc": approach.time.strftime("%Y-%m-%d %H:%M"),
+                "distance_au": approach.distance,
+                "velocity_km_s": approach.velocity,
+                "neo": {
+                    "designation": approach.neo.designation,
+                    "name": approach.neo.name,
+                    "diameter_km": approach.neo.diameter,
+                    "potentially_hazardous": approach.neo.hazardous,
+                }
+            })
+
+        # Output the data into the JSON file
+        json.dump(approaches, outfile, indent=2)

@@ -50,11 +50,11 @@ def load_neos(neo_csv_path):
 
                 # Append neo objects to the list
                 neos.append(NearEarthObject(row['pdes'], hazard, name, diameter))
+        # Handle TypeError exception
         except TypeError:
             print(TypeError)
     # Return NEO objects in list format
     return neos
-
 
 def load_approaches(cad_json_path):
     """Read close approach data from a JSON file.

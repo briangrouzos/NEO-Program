@@ -18,7 +18,6 @@ quirks of the data set, such as missing names and unknown diameters.
 You'll edit this file in Task 1.
 """
 import math
-
 from helpers import cd_to_datetime, datetime_to_str
 
 
@@ -34,7 +33,7 @@ class NearEarthObject:
     initialized to an empty collection, but eventually populated in the
     `NEODatabase` constructor.
     """
-    # initialize the object with the required and optional arguements
+    # initialize the object with the required and optional arguments
     def __init__(self, designation, hazardous, name=None, diameter=float('nan'), **info):
         """Create a new `NearEarthObject`.
 
@@ -74,10 +73,6 @@ class NearEarthObject:
         """Return the designation of this NEO."""
         return self.designation
 
-    def get_approaches(self):
-        """Return the approaches of this NEO."""
-        return self.approaches
-
     def __str__(self):
         """Return `str(self)`."""
         # Update diameter if there is a diameter
@@ -87,7 +82,7 @@ class NearEarthObject:
             temp_diameter = ""
 
         # Update string based on if NEO is hazardous
-        if self.hazardous is not False:
+        if self.hazardous:
             temp_haz = "is potentially hazardous"
         else:
             temp_haz = "is not potentially hazardous"
@@ -116,8 +111,12 @@ class CloseApproach:
         """Create a new `CloseApproach`.
 
         :param info: A dictionary of excess keyword arguments supplied to the constructor.
+        time : the time of the closest approach to Earth in UTC
+        distance : the nominal approach distance in astronomical units
+        velocity : the relative approach velocity in kilometers per second
+        neo : the designation of the near-Earth object
         """
-
+        # Set attributes for the Close Approach object
         self._designation = neo
         self.time = cd_to_datetime(time)
         self.distance = float(distance)
@@ -146,6 +145,9 @@ class CloseApproach:
         """Return a representation of the full name of this NEO."""
         return self.neo.fullname
 
+    def get_designation(self):
+        """Return the designation of this NEO."""
+        return self._designation
 
     def __str__(self):
         """Return `str(self)`."""
