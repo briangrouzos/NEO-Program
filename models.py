@@ -33,8 +33,9 @@ class NearEarthObject:
     initialized to an empty collection, but eventually populated in the
     `NEODatabase` constructor.
     """
+
     # initialize the object with the required and optional arguments
-    def __init__(self, designation, hazardous, name=None, diameter=float('nan'), **info):
+    def __init__(self, designation, hazardous, name=None, diameter=float("nan"), **info):
         """Create a new `NearEarthObject`.
 
         :param info: A dictionary of excess keyword arguments supplied to the constructor.
@@ -44,21 +45,18 @@ class NearEarthObject:
         hazardous : boolean, required, True or False
         name : string, optional, may not be unique
         diameter : float, optional, may be unknown
+        approaches: list, initialized empty, will store Close Approaches of NEO during database creation
         """
-        # check hazardous to ensure it's a boolean or raise a TypeError
         if not isinstance(hazardous, bool):
             raise TypeError("Hazardous must be a boolean")
-        # check diameter to ensure a float
+
         if not isinstance(diameter, float):
             raise TypeError("Diameter must be a float")
 
-        # Initialize variables with provided arguments
         self.designation = str(designation)
         self.name = name
         self.diameter = diameter
         self.hazardous = hazardous
-
-        # Create an empty initial collection of linked approaches.
         self.approaches = []
 
     @property
@@ -74,14 +72,12 @@ class NearEarthObject:
         return self.designation
 
     def __str__(self):
-        """Return `str(self)`."""
-        # Update diameter if there is a diameter
+        """Return `str(self) a human-readable formatted string of this NEO."""
         if not math.isnan(self.diameter):
             temp_diameter = " has a diameter of " + str(self.diameter) + "km"
         else:
             temp_diameter = ""
 
-        # Update string based on if NEO is hazardous
         if self.hazardous:
             temp_haz = "is potentially hazardous"
         else:
@@ -107,6 +103,7 @@ class CloseApproach:
     private attribute, but the referenced NEO is eventually replaced in the
     `NEODatabase` constructor.
     """
+
     def __init__(self, time, distance, velocity, neo, **info):
         """Create a new `CloseApproach`.
 
@@ -114,15 +111,12 @@ class CloseApproach:
         time : the time of the closest approach to Earth in UTC
         distance : the nominal approach distance in astronomical units
         velocity : the relative approach velocity in kilometers per second
-        neo : the designation of the near-Earth object
+        neo : the designation of the near-Earth object, defaults to None initially
         """
-        # Set attributes for the Close Approach object
         self._designation = neo
         self.time = cd_to_datetime(time)
         self.distance = float(distance)
         self.velocity = float(velocity)
-
-        # Create an attribute for the referenced NEO, originally None.
         self.neo = None
 
     @property
@@ -142,15 +136,15 @@ class CloseApproach:
 
     @property
     def fullname(self):
-        """Return a representation of the full name of this NEO."""
+        """Return a representation of the full name of the NEO."""
         return self.neo.fullname
 
     def get_designation(self):
-        """Return the designation of this NEO."""
+        """Return the designation of the NEO."""
         return self._designation
 
     def __str__(self):
-        """Return `str(self)`."""
+        """Return `str(self) a formatted human-readable representation of this object."""
         return f"At {self.time_str}, {self.fullname} approaches Earth at a distance of {self.distance:.2f} AU and a velocity of {self.velocity:.2f} km/s."
 
     def __repr__(self):

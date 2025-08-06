@@ -25,13 +25,11 @@ def write_to_csv(results, filename):
     :param filename: A Path-like object pointing to where the data should be saved.
     """
     fieldnames = (
-        'datetime_utc', 'distance_au', 'velocity_km_s',
-        'designation', 'name', 'diameter_km', 'potentially_hazardous'
+        "datetime_utc", "distance_au", "velocity_km_s",
+        "designation", "name", "diameter_km", "potentially_hazardous"
     )
-    # Create a array to store the dictionary rows for loading to the CSV file
     output = []
 
-    # Iterate over the results and create a dictionary item for each object's data. Append to output.
     for result in results:
         output.append({
             "datetime_utc": result.time.strftime("%Y-%m-%d %H:%M"),
@@ -43,8 +41,7 @@ def write_to_csv(results, filename):
             "potentially_hazardous": result.neo.hazardous
         })
 
-    # Write the information to a CSV file
-    with open(filename, 'w') as outfile:
+    with open(filename, "w") as outfile:
         writer = csv.DictWriter(outfile, fieldnames=fieldnames)
         writer.writeheader()
         for o in output:
@@ -62,13 +59,10 @@ def write_to_json(results, filename):
     :param results: An iterable of `CloseApproach` objects.
     :param filename: A Path-like object pointing to where the data should be saved.
     """
-    # Open the file to write the JSON data to
-    with open(filename, 'w') as outfile:
+    with open(filename, "w") as outfile:
 
-        # Create an approaches array for loading the JSON data
         approaches = []
 
-        # Iterate over the data and store the dictionary item into the approaches array
         for approach in results:
             approaches.append({
                 "datetime_utc": approach.time.strftime("%Y-%m-%d %H:%M"),
@@ -82,5 +76,4 @@ def write_to_json(results, filename):
                 }
             })
 
-        # Output the data into the JSON file
         json.dump(approaches, outfile, indent=2)

@@ -21,6 +21,7 @@ class NEODatabase:
     help fetch NEOs by primary designation or by name and to help speed up
     querying for close approaches that match criteria.
     """
+
     def __init__(self, neos, approaches):
         """Create a new `NEODatabase`.
 
@@ -38,21 +39,22 @@ class NEODatabase:
 
         :param neos: A collection of `NearEarthObject`s.
         :param approaches: A collection of `CloseApproach`es.
+
+        Attributes:
+            _neos (collection) : A list of Near Earth Objects
+            _approaches (collection) : A collection of Close Approaches
+            neo_by_designation (dict) : A dictionary mapping designations to objects
+            neo_by_name (dict) : A dictionary mapping names to objects
+            approaches_by_designation (dict) : A dictionary mapping designations to Close Approach objects
+            hazardous (dict) : A dictionary mapping options to hazardous or non-hazardous
         """
         self._neos = neos
         self._approaches = approaches
-
-        # Create dictionary of NEOs by designation and by name for faster searching
         self.neo_by_designation = {}
         self.neo_by_name = {}
-
-        # Create a dictionary of approaches by designation for faster DB setup
         self.approaches_by_designation = {}
+        self.hazardous = {"hazardous":[], "non-hazardous":[]}
 
-        # Create a dictionary of hazardous and non-hazardous NEOs
-        hazardous = {'hazardous':[], 'non-hazardous':[]}
-
-        # Populate the approaches by designation dictionary
         for approach in self._approaches:
             if approach.get_designation() not in self.approaches_by_designation:
                 self.approaches_by_designation[approach.get_designation()] = [
@@ -61,24 +63,20 @@ class NEODatabase:
             else:
                 self.approaches_by_designation[approach.get_designation()].append(approach)
 
-        # Connect neos and approaches
         for neo in self._neos:
             try:
                 for approach in self.approaches_by_designation[neo.designation]:
                     approach.neo = neo
                     neo.approaches.append(approach)
 
-                # Create a hazardous and non-hazardous database
                 if neo.hazardous:
-                    hazardous['hazardous'].append(neo)
+                    self.hazardous["hazardous"].append(neo)
                 else:
-                    hazardous['non-hazardous'].append(neo)
+                    self.hazardous["non-hazardous"].append(neo)
 
-            # Handle KeyError by skipping that item and continuing
             except KeyError:
                 continue
 
-            # Add neo to dictionary of designations and dictionary of names for faster searching
             self.neo_by_designation[neo.designation] = neo
             if neo.name is not None:
                 self.neo_by_name[neo.name] = neo
@@ -132,16 +130,13 @@ class NEODatabase:
         :param filters: A collection of filters capturing user-specified criteria.
         :return: A stream of matching `CloseApproach` objects.
         """
-        # Iterate over approaches to validate against filters
         for approach in self._approaches:
             valid = True
 
-            # Iterate over filters and change valid to false, break for loop if filter doesn't match approach
             for f in filters:
                 if not f(approach):
                     valid = False
                     break
 
-            # Only print approach if it meets all the filter criteria
             if valid:
                 yield approach

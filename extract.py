@@ -25,7 +25,7 @@ def load_neos(neo_csv_path):
     :return: A collection of `NearEarthObject`s.
     """
     # open the file and read the information
-    with open(neo_csv_path, 'r') as infile:
+    with open(neo_csv_path, "r") as infile:
         reader = csv.DictReader(infile)
 
         # Create an empty list to store the objects in
@@ -35,21 +35,21 @@ def load_neos(neo_csv_path):
         try:
             for row in reader:
                 # Use if statements to ensure blank information is handled appropriately and convert hazards to booleans
-                if row['name'] == '':
+                if row["name"] == "":
                     name = None
                 else:
-                    name = row['name']
-                if row['diameter'] == '':
-                    diameter = float('nan')
+                    name = row["name"]
+                if row["diameter"] == "":
+                    diameter = float("nan")
                 else:
-                    diameter = float(row['diameter'])
-                if row['pha'] == 'Y':
+                    diameter = float(row["diameter"])
+                if row["pha"] == "Y":
                     hazard = True
                 else:
                     hazard = False
 
                 # Append neo objects to the list
-                neos.append(NearEarthObject(row['pdes'], hazard, name, diameter))
+                neos.append(NearEarthObject(row["pdes"], hazard, name, diameter))
         # Handle TypeError exception
         except TypeError:
             print(TypeError)
@@ -63,14 +63,14 @@ def load_approaches(cad_json_path):
     :return: A collection of `CloseApproach`es.
     """
     # read information from JSON file
-    with open(cad_json_path, 'r') as infile:
+    with open(cad_json_path, "r") as infile:
         data = json.load(infile)
 
     # Create empty approaches array
     approaches = []
 
     # iterate through the data and create objects
-    for row in data['data']:
+    for row in data["data"]:
         time = row[3]
         distance = row[4]
         velocity = row[7]
